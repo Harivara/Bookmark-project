@@ -14,3 +14,14 @@ services:
     restart: always
     depends_on:
       - bookmarker-db
+
+  bookmarker-ui-nextjs:
+    container_name: bookmarker-ui-netjs
+    build:
+      context: bookmarker-ui-nextjs
+      dockerfile: Dockerfile
+    ports:
+      - "13000:3000"
+    environment:
+      SERVER_SIDE_API_BASE_URL: http://bookmarker-api:8081
+      CLIENT_SIDE_API_BASE_URL: http://localhost:18080

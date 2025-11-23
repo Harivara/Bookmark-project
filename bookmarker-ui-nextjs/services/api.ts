@@ -1,16 +1,23 @@
 import axios from "axios"
 import {BookmarksResponse} from "./models";
-// import getConfig from 'next/config'
-// const { serverRuntimeConfig, publicRuntimeConfig } = getConfig()
-//
-// const getApiUrl = () => {
-//     return serverRuntimeConfig.API_BASE_URL || publicRuntimeConfig.API_BASE_URL;
-// }
+
+
+const serverApi = process.env.SERVER_SIDE_API_BASE_URL;
+const clientApi = process.env.CLIENT_SIDE_API_BASE_URL;
+
+const getApiUrl = () => {
+    if (typeof window === "undefined") {
+        // Server-side (SSR)
+        return serverApi!;
+    }
+    // Browser
+    return clientApi!;
+};
 
 const API_BASE_URL= "http://localhost:8081"
 
 export const fetchBookmarks = async (page: number, query: string): Promise<BookmarksResponse> => {
-    let url = `${API_BASE_URL}/api/bookmarks?page=${page}`
+    let url = `${getApiUrl()}/api/bookmarks?page=${page}`
     if(query) {
         url += `&query=${query}`
     }
@@ -19,6 +26,6 @@ export const fetchBookmarks = async (page: number, query: string): Promise<Bookm
 }
 
 export const saveBookmark = async (bookmark:{title: string, url: string}) => {
-    const res = await axios.post(`${API_BASE_URL}/api/bookmarks`, bookmark)
+    const res = await axios.post(`${getApiUrl()}/api/bookmarks`, bookmark)
     return res.data
 }
